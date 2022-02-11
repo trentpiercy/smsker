@@ -7,7 +7,7 @@ class Smsker {
   static const MethodChannel _channel = const MethodChannel('smsker');
 
   /// Send SMS [message] to [phone].
-  /// 
+  ///
   /// ```dart
   /// sendSms(phone: "123123123", message: "Hi!");
   /// ```

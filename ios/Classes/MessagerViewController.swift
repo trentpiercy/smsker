@@ -9,11 +9,19 @@ import UIKit
 import MessageUI
 
 class MessagerViewController: UIViewController, MFMessageComposeViewControllerDelegate {    
+    let phone: String
+    let message: String
+    
+    init(phone: String, message: String) {
+        self.phone = phone
+        self.message = message
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         let messageVC = MFMessageComposeViewController()
-        messageVC.body = "Enter a message details here";
-        messageVC.recipients = ["recipients_number_here"]
+        messageVC.body = message
+        messageVC.recipients = [phone]
         messageVC.messageComposeDelegate = self
         self.present(messageVC, animated: true, completion: nil)
     }

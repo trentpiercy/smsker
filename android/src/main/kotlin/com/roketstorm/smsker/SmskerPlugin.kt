@@ -46,7 +46,7 @@ public class SmskerPlugin: FlutterPlugin, MethodCallHandler {
     } else if (call.method == "sendSms") {
       var smsManager = SmsManager.getDefault()
       smsManager.sendTextMessage(call.argument<String>("phone"), null, call.argument<String>("message"), null, null)
-      result.success("Success!")
+      result.success("success")
     } else {
       result.notImplemented()
     }

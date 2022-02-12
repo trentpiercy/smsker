@@ -9,24 +9,12 @@ import UIKit
 import MessageUI
 
 class MessagerViewController: UIViewController, MFMessageComposeViewControllerDelegate {    
-    let phone: String
-    let message: String
+    var phone = ""
+    var message = ""
 
-    required init?(coder decoder: NSCoder) {
-        self.phone = ""
-        self.message = ""
-        super.init(coder: decoder)
-    }
-    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
-        self.phone = ""
-        self.message = ""
-        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
-    }
-    
-    init(phone: String, message: String) {
+    func setPhoneAndMessage(phone: String, message: String) {
         self.phone = phone
         self.message = message
-        super.init()
     }
     
     override func viewDidLoad() {

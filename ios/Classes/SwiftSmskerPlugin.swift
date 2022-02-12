@@ -11,12 +11,11 @@ public class SwiftSmskerPlugin: NSObject, FlutterPlugin, UINavigationControllerD
 
   public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
     if (call.method == "sendSms") {
-      let args = call.arguments as? Dictionary<String, Any>
-      let phone = args["phone"] as? String
-      let message = args["message"] as? String
+      let args = call.arguments as! Dictionary<String, Any>
+      let phone = args["phone"] as! String
+      let message = args["message"] as! String
       
       if MFMessageComposeViewController.canSendText() {
-          let root = UIApplication.shared.keyWindow?.rootViewController
           UIApplication.shared.keyWindow?.rootViewController?.present(
             MessagerViewController(
               phone: phone,

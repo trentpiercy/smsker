@@ -11,10 +11,17 @@ import MessageUI
 class MessagerViewController: UIViewController, MFMessageComposeViewControllerDelegate {    
     let phone: String
     let message: String
+
+    required init?(coder decoder: NSCoder) {
+        self.phone = ""
+        self.message = ""
+        super.init(coder: decoder)
+    }
     
     init(phone: String, message: String) {
         self.phone = phone
         self.message = message
+        super.init()
     }
     
     override func viewDidLoad() {

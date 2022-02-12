@@ -1,10 +1,20 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:rxdart/rxdart.dart';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 
-enum SmskerResult { Failed, Cancelled, Sent }
+enum SmskerResult {
+  /// Message view failed to open or failed to send
+  Failed,
+
+  /// Message view opened but not sent
+  Cancelled,
+
+  /// Message sent
+  Sent
+}
 
 class Smsker {
   static const MethodChannel _channel = const MethodChannel('smsker');
@@ -16,42 +26,51 @@ class Smsker {
   /// ```
   static Future<SmskerResult> sendSms(
       {@required String phone, @required String message}) async {
-    BehaviorSubject<SmskerResult> resultStream = BehaviorSubject();
+    if (Platform.isIOS) {
+      BehaviorSubject<SmskerResult> resultStream = BehaviorSubject();
 
-    Future<void> handler(MethodCall call) async {
-      if (call.method == 'completed') {
-        switch (call.arguments) {
-          case 'cancelled':
-            resultStream.add(SmskerResult.Cancelled);
-            return;
-          case 'sent':
-            resultStream.add(SmskerResult.Sent);
-            return;
-          default:
-            resultStream.add(SmskerResult.Failed);
+      // Handle iOS message compose result
+      Future<void> callHandler(MethodCall call) async {
+        if (call.method == 'messageComposeResult') {
+          switch (call.arguments) {
+            case 'sent':
+              resultStream.add(SmskerResult.Sent);
+              return;
+            case 'cancelled':
+              resultStream.add(SmskerResult.Cancelled);
+              return;
+            default:
+          }
         }
+
+        // Fail if not sent or cancelled
+        resultStream.add(SmskerResult.Failed);
+      }
+
+      // Call handler for message view completion
+      _channel.setMethodCallHandler(callHandler);
+
+      // Bring up the message view
+      await _channel
+          .invokeMethod('sendSms', {'phone': phone, 'message': message});
+
+      // Wait for user to finish either sending or cancelling
+      final result = await resultStream.first;
+
+      // Remove the handler and return
+      _channel.setMethodCallHandler(null);
+      resultStream.close();
+      return result;
+    } else if (Platform.isAndroid) {
+      // Send in background on Android
+      final result = await _channel
+          .invokeMethod('sendSms', {'phone': phone, 'message': message});
+
+      if (result == 'success') {
+        return SmskerResult.Sent;
       }
     }
 
-    _channel.setMethodCallHandler(handler);
-
-    await _channel
-        .invokeMethod('sendSms', {'phone': phone, 'message': message});
-
-    final result = await resultStream.first;
-    _channel.setMethodCallHandler(null);
-    resultStream.close();
-
-    return result;
+    return SmskerResult.Failed;
   }
-
-  // static void listenSmsResult({@required Function(String) callback}) {
-  //   _channel.setMethodCallHandler((call) {
-  //     // Execute the callback
-  //     callback(call.arguments);
-  //     // Remove the handler
-  //     _channel.setMethodCallHandler(null);
-  //     return;
-  //   });
-  // }
 }

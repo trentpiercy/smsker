@@ -30,13 +30,13 @@ class MessagerViewController: UIViewController, MFMessageComposeViewControllerDe
     func messageComposeViewController(_ controller: MFMessageComposeViewController, didFinishWith result: MessageComposeResult) {
         switch (result) {
         case .cancelled:
-            print("Message was cancelled")
+            // print("Message was cancelled")
             self.onComplete(result: "cancelled")
         case .failed:
-            print("Message failed")
+            // print("Message failed")
             self.onComplete(result: "failed")
         case .sent:
-            print("Message was sent")
+            // print("Message was sent")
             self.onComplete(result: "sent")
         default:
             return
@@ -45,9 +45,8 @@ class MessagerViewController: UIViewController, MFMessageComposeViewControllerDe
     }
 
     func onComplete(result: String) {
-        print("onComplete() called")
         let rootViewController : FlutterViewController = UIApplication.shared.keyWindow?.rootViewController as! FlutterViewController
         let methodChannel = FlutterMethodChannel(name: "smsker", binaryMessenger: rootViewController.binaryMessenger)
-        methodChannel.invokeMethod("completed", arguments: result)
+        methodChannel.invokeMethod("messageComposeResult", arguments: result)
     }
 }

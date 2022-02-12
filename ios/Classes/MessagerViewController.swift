@@ -17,6 +17,11 @@ class MessagerViewController: UIViewController, MFMessageComposeViewControllerDe
         self.message = ""
         super.init(coder: decoder)
     }
+    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
+        self.phone = ""
+        self.message = ""
+        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
+    }
     
     init(phone: String, message: String) {
         self.phone = phone
@@ -27,8 +32,8 @@ class MessagerViewController: UIViewController, MFMessageComposeViewControllerDe
     override func viewDidLoad() {
         super.viewDidLoad()
         let messageVC = MFMessageComposeViewController()
-        messageVC.body = message
-        messageVC.recipients = [phone]
+        messageVC.body = self.message
+        messageVC.recipients = [self.phone]
         messageVC.messageComposeDelegate = self
         self.present(messageVC, animated: true, completion: nil)
     }

@@ -13,8 +13,25 @@ class Smsker {
   /// ```
   static Future<String> sendSms(
       {@required String phone, @required String message}) async {
+    // Future<dynamic> Function(MethodCall) handler = (call) {};
+
+    // _channel.setMethodCallHandler(handler);
+
     final String phoneSent = await _channel
         .invokeMethod('sendSms', {'phone': phone, 'message': message});
+
+    // _channel.setMethodCallHandler(null);
+
     return phoneSent;
+  }
+
+  static void listenSmsResult({@required Function(String) callback}) {
+    _channel.setMethodCallHandler((call) {
+      // Execute the callback
+      callback(call.arguments);
+      // Remove the handler
+      _channel.setMethodCallHandler(null);
+      return;
+    });
   }
 }

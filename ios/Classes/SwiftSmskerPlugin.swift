@@ -20,9 +20,9 @@ public class SwiftSmskerPlugin: NSObject, FlutterPlugin, UINavigationControllerD
       
       if MFMessageComposeViewController.canSendText() {
           UIApplication.shared.keyWindow?.rootViewController?.present(messagerView, animated: true, completion: nil)
-          result("Presented view")
+          result("presented")
       } else {
-        result("Failed to present view")
+        result("failed")
       }
     } else {
       result (FlutterMethodNotImplemented)

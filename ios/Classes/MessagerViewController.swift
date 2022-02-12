@@ -7,6 +7,7 @@
 
 import UIKit
 import MessageUI
+import Flutter
 
 class MessagerViewController: UIViewController, MFMessageComposeViewControllerDelegate {
     var phone = ""
@@ -30,13 +31,23 @@ class MessagerViewController: UIViewController, MFMessageComposeViewControllerDe
         switch (result) {
         case .cancelled:
             print("Message was cancelled")
+            self.onComplete(result: "cancelled")
         case .failed:
             print("Message failed")
+            self.onComplete(result: "failed")
         case .sent:
             print("Message was sent")
+            self.onComplete(result: "sent")
         default:
             return
         }
         dismiss(animated: true, completion: nil)
+    }
+
+    func onComplete(result: String) {
+        print("onComplete() called")
+        let rootViewController : FlutterViewController = UIApplication.shared.keyWindow?.rootViewController as! FlutterViewController
+        let methodChannel = FlutterMethodChannel(name: "smsker", binaryMessenger: rootViewController.binaryMessenger)
+        methodChannel.invokeMethod("completed", arguments: result)
     }
 }

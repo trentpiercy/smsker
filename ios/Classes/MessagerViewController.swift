@@ -8,7 +8,7 @@
 import UIKit
 import MessageUI
 
-class MessagerViewController: UIViewController, MFMessageComposeViewControllerDelegate {    
+class MessagerViewController: UIViewController, MFMessageComposeViewControllerDelegate {
     var phone = ""
     var message = ""
 
@@ -16,7 +16,7 @@ class MessagerViewController: UIViewController, MFMessageComposeViewControllerDe
         self.phone = phone
         self.message = message
     }
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         let messageVC = MFMessageComposeViewController()
@@ -25,7 +25,7 @@ class MessagerViewController: UIViewController, MFMessageComposeViewControllerDe
         messageVC.messageComposeDelegate = self
         self.present(messageVC, animated: true, completion: nil)
     }
-    
+
     func messageComposeViewController(_ controller: MFMessageComposeViewController, didFinishWith result: MessageComposeResult) {
         switch (result) {
         case .cancelled:
@@ -39,5 +39,4 @@ class MessagerViewController: UIViewController, MFMessageComposeViewControllerDe
         }
         dismiss(animated: true, completion: nil)
     }
-
 }

@@ -5,7 +5,7 @@ import 'package:rxdart/rxdart.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 
-enum SmskerResult {
+enum SmsResult {
   /// Message view failed to open or failed to send
   Failed,
 
@@ -24,27 +24,27 @@ class Smsker {
   /// ```dart
   /// sendSms(phone: "123123123", message: "Hi!");
   /// ```
-  static Future<SmskerResult> sendSms(
+  static Future<SmsResult> sendSms(
       {@required String phone, @required String message}) async {
     if (Platform.isIOS) {
-      BehaviorSubject<SmskerResult> resultStream = BehaviorSubject();
+      BehaviorSubject<SmsResult> resultStream = BehaviorSubject();
 
       // Handle iOS message compose result
       Future<void> callHandler(MethodCall call) async {
         if (call.method == 'messageComposeResult') {
           switch (call.arguments) {
             case 'sent':
-              resultStream.add(SmskerResult.Sent);
+              resultStream.add(SmsResult.Sent);
               return;
             case 'cancelled':
-              resultStream.add(SmskerResult.Cancelled);
+              resultStream.add(SmsResult.Cancelled);
               return;
             default:
           }
         }
 
         // Fail if not sent or cancelled
-        resultStream.add(SmskerResult.Failed);
+        resultStream.add(SmsResult.Failed);
       }
 
       // Call handler for message view completion
@@ -67,10 +67,10 @@ class Smsker {
           .invokeMethod('sendSms', {'phone': phone, 'message': message});
 
       if (result == 'success') {
-        return SmskerResult.Sent;
+        return SmsResult.Sent;
       }
     }
 
-    return SmskerResult.Failed;
+    return SmsResult.Failed;
   }
 }

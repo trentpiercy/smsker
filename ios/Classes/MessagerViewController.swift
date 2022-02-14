@@ -30,18 +30,16 @@ class MessagerViewController: UIViewController, MFMessageComposeViewControllerDe
     func messageComposeViewController(_ controller: MFMessageComposeViewController, didFinishWith result: MessageComposeResult) {
         switch (result) {
         case .cancelled:
-            // print("Message was cancelled")
             self.onComplete(result: "cancelled")
         case .failed:
-            // print("Message failed")
             self.onComplete(result: "failed")
         case .sent:
-            // print("Message was sent")
             self.onComplete(result: "sent")
         default:
             return
         }
-        dismiss(animated: true, completion: nil)
+        self.dismiss(animated: true, completion: nil)
+        UIApplication.shared.keyWindow?.rootViewController?.dismiss(animated: true, completion: nil)
     }
 
     func onComplete(result: String) {
